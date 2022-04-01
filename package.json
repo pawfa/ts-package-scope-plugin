@@ -1,0 +1,32 @@
+{
+    "name": "ts-package-scope-plugin",
+    "version": "0.0.1",
+    "license": "MIT",
+    "description": "TypeScript Language Service Plugin for creating package scope.",
+    "keywords": [
+        "typescript",
+        "scope",
+        "language service",
+        "package",
+        "encapsulation",
+        "plugin"
+    ],
+    "author": "pawfa fajfer.pawel@gmail.com",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/pawfa/ts-package-scope-plugin.git"
+    },
+    "main": "lib/index.js",
+    "files": [
+        "lib"
+    ],
+    "scripts": {
+        "build": "tsc"
+    },
+    "peerDependencies": {
+        "typescript": "^4.5.5"
+    },
+    "devDependencies": {
+        "@types/node": "^16.0.14"
+    }
+}

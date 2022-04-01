@@ -1,0 +1,12 @@
+# common
+.cache/
+.vscode/
+.idea/
+.github/
+.gitignore.d/
+
+# specific
+.prettierrc
+node_modules
+test
+tsconfig.json
