@@ -4,6 +4,7 @@ import {isPackageScoped} from "../package.core/isPackageScoped";
 import {PluginCreateInfo, TypeScript} from "./types";
 import {getSourceFile} from "./utils";
 import {Logger} from "./logger";
+import {isPublicScoped} from "../package.core/isPublicScoped";
 
 export function init(modules: { typescript: TypeScript }) {
     const ts = modules.typescript;
@@ -27,9 +28,15 @@ export function init(modules: { typescript: TypeScript }) {
 
                         sourcefile.forEachChild((node) => {
                             if (ts.isImportDeclaration(node)) {
-                                const importPath = node.moduleSpecifier.getText();
+                                const importPath = node.moduleSpecifier.getText().replace(/"/g, '');
+                                const {fileName} = sourcefile;
 
-                                if (isPackageScoped(sourcefile.fileName) && isPackageScoped(importPath) && !isFromTheSamePackage(importPath, sourcefile.fileName)) {
+                                if (
+                                    isPackageScoped(fileName)
+                                    && isPackageScoped(importPath)
+                                    && !isFromTheSamePackage(importPath, fileName)
+                                    && !isPublicScoped(info, fileName, importPath, ts))
+                                {
                                     diags.push(
                                         {
                                             category: 1,
@@ -57,16 +64,13 @@ export function init(modules: { typescript: TypeScript }) {
                         if (!priorCompletionInfo) {
                             return priorCompletionInfo
                         }
-
                         priorCompletionInfo.entries = priorCompletionInfo.entries.filter((completionEntry) => {
-                            info.project.projectService.logger.info(
-                                `completions data ${completionEntry.data?.fileName}`
-                            );
                             if (!completionEntry.data || !completionEntry.data.fileName) {
                                 return true
                             }
-
-                            return isPackageScoped(completionEntry.data.fileName) && isPackageScoped(sourcefile.fileName) ? !isFromTheSamePackage(completionEntry.data.fileName, sourcefile.fileName) : true
+                            return isPackageScoped(completionEntry.data.fileName) && isPackageScoped(sourcefile.fileName)
+                                ? !isFromTheSamePackage(completionEntry.data.fileName, sourcefile.fileName) ? isPublicScoped(info, fileName, completionEntry.data.fileName, ts) : true
+                                : true
                         })
 
                         return priorCompletionInfo;
