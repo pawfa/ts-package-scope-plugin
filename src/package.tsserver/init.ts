@@ -10,6 +10,8 @@ export function init(modules: { typescript: TypeScript }) {
     const ts = modules.typescript;
 
     function create(info: PluginCreateInfo) {
+        const isIntelliSenseDisabled = info.config.options && info.config.options.intelliSense === false;
+
         const logger = new Logger(info.project.projectService.logger)
         logger.info("Ts-package-scope-plugin is getting set up.");
 
@@ -56,7 +58,7 @@ export function init(modules: { typescript: TypeScript }) {
                 }
 
                 /** Function which returns completions suggested by IDE - not working for Intellij **/
-                if (p === 'getCompletionsAtPosition') {
+                if (!isIntelliSenseDisabled && p === 'getCompletionsAtPosition') {
                     return function getCompletionsAtPosition(fileName: string, position: number, formatOptions: GetCompletionsAtPositionOptions | undefined) {
                         const priorCompletionInfo = info.languageService.getCompletionsAtPosition(fileName, position, formatOptions,);
                         const sourcefile = getSourceFile(info.languageService, fileName);

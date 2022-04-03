@@ -46,7 +46,7 @@ project
 
 When you import file from one package into another, IDE will show a TypeScript error.
 
-### Public scope
+#### Public scope
 
 To make file available from other packages set its scope to public using `/** package public **/` JS Doc at the top of the file:
 ```javascript
@@ -55,6 +55,24 @@ import {Helper} from './helpers'
 
 export function getClient() {
 
+}
+```
+
+#### IntelliSense filtering (only for VS Code)
+
+By default, files which are not available for current package will be removed from intellisense suggestions.
+To turn on or off this feature you can use `intelliSense` option in tsconfig.json:
+
+```json
+{
+  "compilerOptions": {
+    "plugins": [{
+      "name": "ts-package-scope-plugin",
+      "options": {
+        "intelliSense": false
+      }
+    }]
+  }
 }
 ```
 
