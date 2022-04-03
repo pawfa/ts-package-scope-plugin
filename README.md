@@ -2,7 +2,8 @@
 
 TypeScript Language Service Plugin for creating package scopes using dir names and JSDocs.
 
-It provides IntelliSense for VS Code and error reporting using typescript compiler.
+It provides IntelliSense for VS Code and error reporting using TypeScript TSServer.
+
 ## Installation and usage
 
 Install package:
@@ -23,11 +24,13 @@ Update `tsconfig..json`:
 
 *VS Code users*
 
-Turn on option *Use workspace version* for TypeScript
+Run command *TypeScript: Select TypeScript version* and choose *Use workspace version*:
+
+![](docs/typescript-version-vscode.png)
 
 ## Configuration
 
-To make file package scoped it needs to be placed in folder with `package` separated with dot in its name (`package.<name>` or `<name>.package`):
+To make file package scoped it needs to be placed in folder with `package` in its name separated with dot ex. `package.<name>` or `<name>.package`:
 
 ```
 project
