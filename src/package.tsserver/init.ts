@@ -28,7 +28,7 @@ export function init(modules: { typescript: TypeScript }) {
 
                         sourcefile.forEachChild((node) => {
                             if (ts.isImportDeclaration(node)) {
-                                const importPath = node.moduleSpecifier.getText().replace(/"/g, '');
+                                const importPath = node.moduleSpecifier.getText().replace(/["']/g, '');
                                 const {fileName} = sourcefile;
 
                                 if (
