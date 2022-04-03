@@ -1,6 +1,6 @@
 # ts-package-scope-plugin
 
-TypeScript Language Service Plugin for creating package scopes using dir names and JSDocs.
+TypeScript Language Service Plugin for creating package scopes using dir names and JS Docs.
 
 It provides IntelliSense for VS Code and error reporting using TypeScript TSServer.
 
@@ -48,9 +48,9 @@ When you import file from one package into another, IDE will show a TypeScript e
 
 #### Public scope
 
-To make file available from other packages set its scope to public using `/** package public **/` JS Doc at the top of the file:
+To make file available from other packages set its scope to public using JS Doc tag at the top of the file:
 ```javascript
-/** package public **/
+/** @package-scope public **/
 import {Helper} from './helpers'
 
 export function getClient() {
