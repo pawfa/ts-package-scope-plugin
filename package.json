@@ -21,12 +21,19 @@
         "lib"
     ],
     "scripts": {
-        "build": "tsc"
+        "build": "tsc --project tsconfig.build.json",
+        "test": "jest"
     },
     "peerDependencies": {
         "typescript": "~4.6.3"
     },
     "devDependencies": {
-        "@types/node": "^16.0.14"
+        "@types/jest": "^27.4.1",
+        "@types/node": "^16.0.14",
+        "jest": "^27.5.1",
+        "ts-jest": "^27.1.4"
+    },
+    "dependencies": {
+        "ts-package-scope-plugin": "^0.0.2"
     }
 }
