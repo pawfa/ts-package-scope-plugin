@@ -9,7 +9,7 @@ export function isPublicScoped(info: PluginCreateInfo, fileName:string, importPa
 
     const importFilePackageJsDocTags: JSDocTag[] = [];
 
-    importedSourceFile.forEachChild((node) => {
+    importedSourceFile?.forEachChild((node) => {
         const packageJsDocTagsForNode = ts.getJSDocTags(node).filter((tag)=> tag.tagName.escapedText.toString().includes("package-"));
         importFilePackageJsDocTags.push(...packageJsDocTagsForNode);
     })

@@ -24,14 +24,14 @@ export class TSServerFixture {
       cwd: path.join(__dirname,"..", 'project-fixture'),
     });
 
-    readline.createInterface({ input: this.proc.stdout! })?.on('line', line => {
+    this.proc.stdout && readline.createInterface({ input: this.proc.stdout })?.on('line', line => {
       if(line[0] !== '{') {
         return
       }
       this.logs.push(JSON.parse(line))
     })
 
-    this.exitPromise = new Promise<void>((resolve,reject)=> {
+    this.exitPromise = new Promise<void>((resolve)=> {
       this.proc.stdout?.on('exit', () => {
         resolve()
       });
