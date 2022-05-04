@@ -1,3 +1,7 @@
+[![npm version](https://img.shields.io/npm/v/ts-package-scope-plugin.svg)](https://www.npmjs.com/package/ts-package-scope-plugin)
+[![Build Status](https://github.com/pawfa/ts-package-scope-plugin/workflows/CI/badge.svg)](https://github.com/pawfa/ts-package-scope-plugin/actions)
+[![Build Status](https://snyk.io/test/github/pawfa/ts-package-scope-plugin/badge.svg?targetFile=package.json)](https://snyk.io/test/github/pawfa/ts-package-scope-plugin?targetFile=package.json)
+
 # ts-package-scope-plugin
 
 TypeScript Language Service Plugin for creating package scopes using dir names and JS Docs.
