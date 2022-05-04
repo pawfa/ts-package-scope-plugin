@@ -15,6 +15,6 @@
   "license": "ISC",
   "dependencies": {
     "typescript": "~4.6.3",
-    "ts-package-scope-plugin": "file:./.."
+    "ts-package-scope-plugin": "file:../.."
   }
 }
