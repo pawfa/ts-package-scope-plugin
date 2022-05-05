@@ -30,6 +30,11 @@ jobs:
           node-version: 16.x
       - run: npm install
       - run: npm run build
+      - name: Archive build artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: build-16.x
+          path: lib
   test:
     runs-on: ubuntu-latest
     needs: build
@@ -45,3 +50,27 @@ jobs:
       - run: npm ci
         working-directory: ./test/e2e
       - run: npm run test
+  release:
+    name: Release
+    needs: test
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16.x
+      - name: Download build artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: build-16.x
+          path: lib
+      - name: Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npx semantic-release --dry-run
