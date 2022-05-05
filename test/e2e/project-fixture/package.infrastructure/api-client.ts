@@ -1,3 +1,1 @@
-export class ApiClient {
-
-}
+export class ApiClient {}

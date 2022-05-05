@@ -1,44 +1,52 @@
 {
-    "name": "ts-package-scope-plugin",
-    "version": "0.0.2",
-    "license": "MIT",
-    "description": "TypeScript Language Service Plugin for creating package scope.",
-    "keywords": [
-        "typescript",
-        "scope",
-        "language service",
-        "package",
-        "encapsulation",
-        "plugin"
-    ],
-    "author": "pawfa fajfer.pawel@gmail.com",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/pawfa/ts-package-scope-plugin.git"
-    },
-    "main": "lib/index.js",
-    "files": [
-        "lib"
-    ],
-    "scripts": {
-        "build": "tsc --project tsconfig.build.json",
-        "test": "jest",
-        "lint": "eslint . --ext .ts --max-warnings 0"
-    },
-    "peerDependencies": {
-        "typescript": "~4.6.3"
-    },
-    "devDependencies": {
-        "@types/jest": "^27.4.1",
-        "@types/node": "^16.0.14",
-        "@typescript-eslint/eslint-plugin": "^5.22.0",
-        "@typescript-eslint/parser": "^5.22.0",
-        "eslint": "^8.14.0",
-        "jest": "^27.5.1",
-        "ts-jest": "^27.1.4",
-        "typescript": "~4.6.3"
-    },
-    "dependencies": {
-        "ts-package-scope-plugin": "^0.0.2"
-    }
+  "name": "ts-package-scope-plugin",
+  "version": "0.0.2",
+  "license": "MIT",
+  "description": "TypeScript Language Service Plugin for creating package scope.",
+  "keywords": [
+    "typescript",
+    "scope",
+    "language service",
+    "package",
+    "encapsulation",
+    "plugin"
+  ],
+  "author": "pawfa fajfer.pawel@gmail.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pawfa/ts-package-scope-plugin.git"
+  },
+  "main": "lib/index.js",
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "build": "tsc --project tsconfig.build.json",
+    "test": "jest",
+    "lint": "eslint . --ext .ts --max-warnings 0",
+    "prepare": "husky install"
+  },
+  "peerDependencies": {
+    "typescript": "~4.6.3"
+  },
+  "devDependencies": {
+    "@types/jest": "^27.4.1",
+    "@types/node": "^16.0.14",
+    "@typescript-eslint/eslint-plugin": "^5.22.0",
+    "@typescript-eslint/parser": "^5.22.0",
+    "eslint": "^8.14.0",
+    "eslint-config-prettier": "^8.5.0",
+    "husky": "^7.0.4",
+    "jest": "^27.5.1",
+    "lint-staged": "^12.4.1",
+    "prettier": "2.6.2",
+    "ts-jest": "^27.1.4",
+    "typescript": "~4.6.3"
+  },
+  "dependencies": {
+    "ts-package-scope-plugin": "^0.0.2"
+  },
+  "lint-staged": {
+    "**/*": "prettier --write --ignore-unknown"
+  }
 }

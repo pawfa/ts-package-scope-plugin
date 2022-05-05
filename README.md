@@ -18,17 +18,19 @@ Update `tsconfig..json`:
 
 ```json
 {
-    "compilerOptions": {
-        "plugins": [{
-            "name": "ts-package-scope-plugin"
-        }]
-    }
+  "compilerOptions": {
+    "plugins": [
+      {
+        "name": "ts-package-scope-plugin"
+      }
+    ]
+  }
 }
 ```
 
-*VS Code users*
+_VS Code users_
 
-Run command *TypeScript: Select TypeScript version* and choose *Use workspace version*:
+Run command _TypeScript: Select TypeScript version_ and choose _Use workspace version_:
 
 ![](docs/typescript-version-vscode.png)
 
@@ -39,11 +41,11 @@ To make file package scoped it needs to be placed in folder with `package` in it
 ```
 project
 │   README.md
-│   file001.txt    
+│   file001.txt
 │
 └───package.interface
 │   │   api.ts
-│   
+│
 └───package.domain
     │   client.ts
 ```
@@ -53,13 +55,12 @@ When you import file from one package into another, IDE will show a TypeScript e
 #### Public scope
 
 To make file available from other packages set its scope to public using JS Doc tag at the top of the file:
+
 ```javascript
 /** @package-scope public **/
-import {Helper} from './helpers'
+import { Helper } from "./helpers";
 
-export function getClient() {
-
-}
+export function getClient() {}
 ```
 
 #### IntelliSense filtering (only for VS Code)
@@ -70,13 +71,14 @@ To turn on or off this feature you can use `intelliSense` option in tsconfig.jso
 ```json
 {
   "compilerOptions": {
-    "plugins": [{
-      "name": "ts-package-scope-plugin",
-      "options": {
-        "intelliSense": false
+    "plugins": [
+      {
+        "name": "ts-package-scope-plugin",
+        "options": {
+          "intelliSense": false
+        }
       }
-    }]
+    ]
   }
 }
 ```
-

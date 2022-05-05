@@ -1,3 +1,3 @@
 export function isPackageScoped(fileName: string) {
-    return fileName.includes('package')
+  return fileName.includes("package");
 }
