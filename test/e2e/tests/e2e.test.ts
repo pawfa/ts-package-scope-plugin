@@ -23,6 +23,6 @@ describe("Errors", () => {
     const diagnosticResponse = server.findResponse("semanticDiagnosticsSync");
     assert(diagnosticResponse);
 
-    expect(diagnosticResponse.body[0].text).toEqual("Package scope is incorrect.");
+    expect(diagnosticResponse.body[0].text).toEqual("The scope of this file is limited to its package only.");
   });
 });

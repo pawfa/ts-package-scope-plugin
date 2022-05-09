@@ -7,6 +7,8 @@ import { Logger } from "./logger";
 import { isPublicScoped } from "../package.core/isPublicScoped";
 import { Diagnostic } from "typescript";
 
+export const PACKAGE_SCOPE_ERROR_CODE = 100000;
+
 export function init(modules: { typescript: TypeScript }) {
   const ts = modules.typescript;
 
@@ -40,12 +42,13 @@ export function init(modules: { typescript: TypeScript }) {
                   !isPublicScoped(info, fileName, importPath, ts)
                 ) {
                   diags.push({
+                    source: "[ts-package-scope-plugin]",
                     category: 1,
-                    code: 1,
+                    code: PACKAGE_SCOPE_ERROR_CODE,
                     file: sourceFile,
                     start: node.getStart(),
                     length: node.getEnd() - node.getStart(),
-                    messageText: "Package scope is incorrect.",
+                    messageText: "The scope of this file is limited to its package only.",
                   });
                 }
               }
