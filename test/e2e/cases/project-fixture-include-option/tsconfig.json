@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "plugins": [
+      {
+        "name": "ts-package-scope-plugin",
+        "options": {
+          "packageNames": ["core", "infrastructure"],
+          "include": ["./core/**/*", "./infrastructure/**/*"]
+        }
+      }
+    ]
+  }
+}

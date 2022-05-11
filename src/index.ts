@@ -1,3 +1,3 @@
-import { init } from "./package.tsserver/init";
+import { init } from "./tsserver/init";
 
 export = init;

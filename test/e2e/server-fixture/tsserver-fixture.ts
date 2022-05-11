@@ -15,11 +15,19 @@ export class TSServerFixture {
   proc;
   logs: { command: string; body: Array<{ text: string }> }[] = [];
   exitPromise;
-  constructor() {
+  projectName: string;
+  filePath = "";
+
+  constructor(projectName: string, options?: { logs: boolean }) {
+    this.projectName = projectName;
     const tsServerPath = path.join(require.resolve("typescript"), "..", "tsserver.js");
-    this.proc = child_process.fork(tsServerPath, ["--pluginProbeLocations", path.join(__dirname, "..")], {
+    const tsServerParams = ["--pluginProbeLocations", path.join(__dirname, "..")];
+
+    options?.logs && tsServerParams.push("--logFile", path.join(__dirname, projectName + "logs.txt"));
+
+    this.proc = child_process.fork(tsServerPath, tsServerParams, {
       stdio: ["pipe", "pipe", "pipe", "ipc"],
-      cwd: path.join(__dirname, "..", "project-fixture"),
+      cwd: path.join(__dirname, "..", "cases", this.projectName),
     });
 
     this.proc.stdout &&
@@ -40,12 +48,32 @@ export class TSServerFixture {
     });
   }
 
+  async openFile(paths: string[]) {
+    this.filePath = path.join(__dirname, "..", "cases", this.projectName, ...paths);
+    await this.sendCommand({
+      command: "open",
+      arguments: {
+        file: this.filePath,
+      },
+    });
+    return this;
+  }
+
   async sendCommand(command: Command) {
     return new Promise<void>((resolve, reject) => {
       const req = JSON.stringify(Object.assign({ seq: TSServerFixture.seq++, type: "request" }, command)) + "\n";
       this.proc.stdin?.write(req, (error) => {
         error ? reject(error) : resolve();
       });
+    });
+  }
+
+  async sendSemanticDiagnosticsCommand() {
+    await this.sendCommand({
+      command: "semanticDiagnosticsSync",
+      arguments: {
+        file: this.filePath,
+      },
     });
   }
 

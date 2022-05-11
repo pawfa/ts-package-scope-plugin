@@ -14,7 +14,7 @@ Install package:
 
 `yarn add -D ts-package-scope-plugin` or `npm i --save-dev ts-package-scope-plugin`
 
-Update `tsconfig..json`:
+Update `tsconfig.json`:
 
 ```json
 {
@@ -36,7 +36,30 @@ Run command _TypeScript: Select TypeScript version_ and choose _Use workspace ve
 
 ## Configuration
 
-To make file package scoped it needs to be placed in folder with `package` in its name separated with dot ex. `package.<name>` or `<name>.package`:
+By default, plugin will analyse the same files as the TypeScript compiler in your project. You can override this behavior by using `include` property:
+
+```
+{
+  "compilerOptions": {
+    "plugins": [
+      {
+        "name": "ts-package-scope-plugin",
+        "options": {
+          "include": ["./src/**/*"]
+        }
+      }
+    ]
+  }
+}
+```
+
+### Package scope
+
+There are two ways to make module package scoped. Using suffix/prefix in folder name or setting plugin option with specific folder names.
+
+#### 1. `package` prefix/suffix
+
+To make file package scoped using prefix/suffix it needs to be placed in folder with `package` in its name separated with dot ex. `package.<name>` or `<name>.package`:
 
 ```
 project
@@ -48,6 +71,25 @@ project
 │
 └───package.domain
     │   client.ts
+```
+
+#### 2. `packageNames` option
+
+To make file package scoped using specific folder names, they have to be listed as an array in tsconfig.json plugin option:
+
+```
+{
+  "compilerOptions": {
+    "plugins": [
+      {
+        "name": "ts-package-scope-plugin",
+        "options": {
+          "packageNames": ["core", "domain"]
+        }
+      }
+    ]
+  }
+}
 ```
 
 When you import file from one package into another, IDE will show a TypeScript error.

@@ -1,5 +1,5 @@
-import { PluginCreateInfo, TypeScript } from "../package.tsserver/types";
-import { getSourceFile } from "../package.tsserver/utils";
+import { PluginCreateInfo, TypeScript } from "../tsserver/types";
+import { getSourceFile } from "../tsserver/utils";
 import path from "path";
 import { JSDocTag } from "typescript/lib/tsserverlibrary";
 
