@@ -1,11 +1,14 @@
 import { GetCompletionsAtPositionOptions } from "typescript/lib/tsserverlibrary";
-import { isFromTheSamePackage } from "../package.core/isFromTheSamePackage";
-import { isPackageScoped } from "../package.core/isPackageScoped";
+import { isFromTheSamePackage } from "../core/isFromTheSamePackage";
+import { isPackageScoped } from "../core/isPackageScoped";
 import { PluginCreateInfo, TypeScript } from "./types";
 import { getSourceFile } from "./utils";
 import { Logger } from "./logger";
-import { isPublicScoped } from "../package.core/isPublicScoped";
+import { isPublicScoped } from "../core/isPublicScoped";
 import { Diagnostic } from "typescript";
+import { isIncluded } from "../core/isIncluded";
+import path from "path";
+import { makePathPosix } from "../utils/path.utils";
 
 export const PACKAGE_SCOPE_ERROR_CODE = 100000;
 
@@ -14,6 +17,8 @@ export function init(modules: { typescript: TypeScript }) {
 
   function create(info: PluginCreateInfo) {
     const isIntelliSenseDisabled = info.config.options && info.config.options.intelliSense === false;
+    const packageNames = (info.config.options && info.config.options.packageNames) || [];
+    const include: string[] | undefined = info.config.options && info.config.options.include;
 
     Logger.setup(info.project.projectService.logger);
     Logger.info("Ts-package-scope-plugin is getting set up.");
@@ -26,8 +31,9 @@ export function init(modules: { typescript: TypeScript }) {
         if (p === "getSemanticDiagnostics") {
           return function getSemanticDiagnostics(fileName: string): Diagnostic[] {
             const origin_diagnostics = target.getSemanticDiagnostics(fileName);
-            const sourceFile = getSourceFile(info.languageService, fileName);
 
+            const sourceFile = getSourceFile(info.languageService, fileName);
+            const currentDirectory = info.project.getCurrentDirectory();
             const diags: Diagnostic[] = [];
 
             sourceFile?.forEachChild((node) => {
@@ -35,10 +41,20 @@ export function init(modules: { typescript: TypeScript }) {
                 const importPath = node.moduleSpecifier.getText().replace(/["']/g, "");
                 const { fileName } = sourceFile;
 
+                const areBothFilesPackageScoped =
+                  isPackageScoped(fileName, packageNames) && isPackageScoped(importPath, packageNames);
+
+                const currentFileDir = path.posix.dirname(makePathPosix(fileName));
+                const importPathPosix = makePathPosix(importPath);
+                const importPathAbsolute = path.posix.join(currentFileDir, importPathPosix);
+
                 if (
-                  isPackageScoped(fileName) &&
-                  isPackageScoped(importPath) &&
-                  !isFromTheSamePackage(importPath, fileName) &&
+                  areBothFilesPackageScoped &&
+                  (include
+                    ? isIncluded(fileName, currentDirectory, include) &&
+                      isIncluded(importPathAbsolute, currentDirectory, include)
+                    : true) &&
+                  !isFromTheSamePackage(importPath, fileName, packageNames) &&
                   !isPublicScoped(info, fileName, importPath, ts)
                 ) {
                   diags.push({
@@ -79,8 +95,9 @@ export function init(modules: { typescript: TypeScript }) {
               if (!completionEntry.data || !completionEntry.data.fileName) {
                 return true;
               }
-              return isPackageScoped(completionEntry.data.fileName) && isPackageScoped(sourceFile.fileName)
-                ? !isFromTheSamePackage(completionEntry.data.fileName, sourceFile.fileName)
+              return isPackageScoped(completionEntry.data.fileName, packageNames) &&
+                isPackageScoped(sourceFile.fileName, packageNames)
+                ? !isFromTheSamePackage(completionEntry.data.fileName, sourceFile.fileName, packageNames)
                   ? isPublicScoped(info, fileName, completionEntry.data.fileName, ts)
                   : true
                 : true;
