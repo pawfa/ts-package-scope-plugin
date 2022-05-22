@@ -15,8 +15,8 @@ export function init(modules: { typescript: TypeScript }) {
   function create(info: PluginCreateInfo) {
     const isIntelliSenseDisabled = info.config.options && info.config.options.intelliSense === false;
 
-    const logger = new Logger(info.project.projectService.logger);
-    logger.info("Ts-package-scope-plugin is getting set up.");
+    Logger.setup(info.project.projectService.logger);
+    Logger.info("Ts-package-scope-plugin is getting set up.");
 
     return new Proxy(info.languageService, {
       get(target, p) {
