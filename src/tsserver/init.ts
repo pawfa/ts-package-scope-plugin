@@ -6,9 +6,7 @@ import { getSourceFile } from "./utils";
 import { Logger } from "./logger";
 import { isPublicScoped } from "../core/isPublicScoped";
 import { Diagnostic } from "typescript";
-import { isIncluded } from "../core/isIncluded";
-import path from "path";
-import { makePathPosix } from "../utils/path.utils";
+import { Scope } from "../core/Scope";
 
 export const PACKAGE_SCOPE_ERROR_CODE = 100000;
 
@@ -18,7 +16,6 @@ export function init(modules: { typescript: TypeScript }) {
   function create(info: PluginCreateInfo) {
     const isIntelliSenseDisabled = info.config.options && info.config.options.intelliSense === false;
     const packageNames = (info.config.options && info.config.options.packageNames) || [];
-    const include: string[] | undefined = info.config.options && info.config.options.include;
 
     const logger = new Logger(info.project.projectService.logger);
     logger.info("Ts-package-scope-plugin is getting set up.");
@@ -31,37 +28,28 @@ export function init(modules: { typescript: TypeScript }) {
         if (p === "getSemanticDiagnostics") {
           return function getSemanticDiagnostics(fileName: string): Diagnostic[] {
             const origin_diagnostics = target.getSemanticDiagnostics(fileName);
+            const scope = new Scope(info, fileName, info.config.options);
 
-            const sourceFile = getSourceFile(info.languageService, fileName);
-            const currentDirectory = info.project.getCurrentDirectory();
             const diags: Diagnostic[] = [];
 
-            sourceFile?.forEachChild((node) => {
+            scope.sourceFile?.forEachChild((node) => {
               if (ts.isImportDeclaration(node)) {
                 const importPath = node.moduleSpecifier.getText().replace(/["']/g, "");
-                const { fileName } = sourceFile;
-
-                const areBothFilesPackageScoped =
-                  isPackageScoped(fileName, packageNames) && isPackageScoped(importPath, packageNames);
-
-                const currentFileDir = path.posix.dirname(makePathPosix(fileName));
-                const importPathPosix = makePathPosix(importPath);
-                const importPathAbsolute = path.posix.join(currentFileDir, importPathPosix);
+                scope.setImportedFile(importPath);
 
                 if (
-                  areBothFilesPackageScoped &&
-                  (include
-                    ? isIncluded(fileName, currentDirectory, include) &&
-                      isIncluded(importPathAbsolute, currentDirectory, include)
-                    : true) &&
-                  !isFromTheSamePackage(importPath, fileName, packageNames) &&
+                  scope.isCurrentFilePackageScoped() &&
+                  scope.isImportedFilePackageScoped() &&
+                  scope.isCurrentFileIncluded() &&
+                  scope.isImportedFileIncluded() &&
+                  scope.areFilesFromTheSamePackage() &&
                   !isPublicScoped(info, fileName, importPath, ts)
                 ) {
                   diags.push({
                     source: "[ts-package-scope-plugin]",
                     category: 1,
                     code: PACKAGE_SCOPE_ERROR_CODE,
-                    file: sourceFile,
+                    file: scope.sourceFile,
                     start: node.getStart(),
                     length: node.getEnd() - node.getStart(),
                     messageText: "The scope of this file is limited to its package only.",
