@@ -48,6 +48,10 @@ describe("isPackageScoped", () => {
     expect(isPackageScoped(path.join("C", "Users", "infrastructureconcat", "file.ts"), ["infrastructure"])).toBeFalsy();
   });
 
+  test("should return false when fileName contains 'package' substring", () => {
+    expect(isPackageScoped(path.join("C", "Users", "package-something", "file.ts"), ["infrastructure"])).toBeFalsy();
+  });
+
   test("should return false when file name contains package name from package names option", () => {
     expect(isPackageScoped(path.join("C", "Users", "infra", "infrastructure-file.ts"), ["infrastructure"])).toBeFalsy();
   });
